@@ -28,8 +28,12 @@ function App() {
       }
       
       setReview('Loading review...')
-      const response = await axios.post('http://localhost:3000/ai/get-review', { 
-        code: code.trim() 
+      const defaultApiUrl = window.location.hostname === 'localhost'
+        ? 'http://localhost:3000/ai/get-review'
+        : 'https://vercel-backend-five-red.vercel.app/ai/get-review'
+      const apiUrl = import.meta.env.VITE_API_URL || defaultApiUrl
+      const response = await axios.post(apiUrl, {
+        code: code.trim()
       }, {
         headers: {
           'Content-Type': 'application/json'
@@ -46,7 +50,7 @@ function App() {
         errorMessage = error.response.data?.error || error.response.data || `Server error: ${error.response.status}`
       } else if (error.request) {
         // Request was made but no response received
-        errorMessage = 'No response from server. Make sure the backend is running on http://localhost:3000'
+        errorMessage = 'No response from server. Please try again later.'
       } else {
         // Error in setting up the request
         errorMessage = error.message || 'Failed to send request'
